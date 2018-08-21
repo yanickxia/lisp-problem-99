@@ -47,11 +47,7 @@
   [item]
   (letfn [(flatten_list_join [a, b]
             (cond
-              ()
-              )
-            )]
+              (empty? a) b
+              (list? (first a)) (concat (flatten_list (first a)) b)
+              :else (concat (cons (first a) b) (flatten_list (rest a)))))]
     (flatten_list_join item '())))
-
-
-
-(print (flatten_list '(1 '(2 3))))
