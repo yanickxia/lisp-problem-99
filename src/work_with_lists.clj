@@ -27,3 +27,31 @@
 (defn find_numbers_element
   [items k]
   (count (filter (fn [x] (= x k)) items)))
+
+; P05 (*) Reverse a list.
+(defn reverse_list
+  [items]
+  (letfn [(concat_rest_list [a b]
+            (if
+              (empty? a) b
+                         (recur (rest a) (cons (first a) b))))]
+    (concat_rest_list items '())))
+
+; P06 (*) Find out whether a list is a palindrome.
+(defn is_palindrome
+  [items]
+  (= items (reverse_list items)))
+
+; P07 (**) Flatten a nested list structure.
+(defn flatten_list
+  [item]
+  (letfn [(flatten_list_join [a, b]
+            (cond
+              ()
+              )
+            )]
+    (flatten_list_join item '())))
+
+
+
+(print (flatten_list '(1 '(2 3))))
