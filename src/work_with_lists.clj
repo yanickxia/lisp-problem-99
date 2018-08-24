@@ -1,5 +1,17 @@
 (ns work-with-lists)
 
+(def ^:dynamic *verbose* true)
+
+(defmacro printfv
+  [fmt & args]
+  `(when *verbose*
+     (printf ~fmt ~@args)))
+
+(defmacro with-verbose
+  [& body]
+  `(binding [*verbose* true] ~@body))
+
+
 ; P01 (*) Find the last box of a list.
 (defn my-last
   [items]
@@ -51,3 +63,38 @@
               (list? (first a)) (concat (flatten_list (first a)) b)
               :else (concat (cons (first a) b) (flatten_list (rest a)))))]
     (flatten_list_join item '())))
+
+; P08 (**) Eliminate consecutive duplicates of list elements.
+(defn compress
+  [items]
+  (letfn [(compress_with_latest [new_items, next_items]
+            (cond
+              (empty? next_items) new_items
+              (= (last new_items) (first next_items)) (recur new_items (rest next_items))
+              :else (recur (concat new_items (list (first next_items))) (rest next_items))))]
+    (compress_with_latest '() items)))
+
+; (print (compress '(a a a a b c c a a d e e e e)))
+
+; P09 (**) Pack consecutive duplicates of list elements into sublists.
+; a is (() () ()) such as, fuck it !!!
+(defn my_pack
+  [items]
+  (letfn [(my_pack' [a, rest_items]
+            (printfv "input %s %s\n" a rest_items)
+
+            (cond
+              (empty? rest_items) a
+              (= (first (last a)) (first rest_items)) (recur (conj (vec (drop-last a)) (conj (last a) (first rest_items))) (rest rest_items))
+              :else (recur (conj (vec a) (list (first rest_items))) (rest rest_items))))]
+    (my_pack' '() items)))
+
+;(print (my_pack '(a a a a b c c a a d e e e e)))
+
+; P10 (*) Run-length encoding of a list.
+(defn my_encode [items]
+  (letfn [(count_list [a]
+            (list (count a) (first a)))]
+    (map count_list (my_pack items))))
+
+;(print (my_encode '(a a a a b c c a a d e e e e)))
