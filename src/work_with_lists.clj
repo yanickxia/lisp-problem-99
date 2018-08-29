@@ -81,8 +81,6 @@
 (defn my_pack
   [items]
   (letfn [(my_pack' [a, rest_items]
-            (printfv "input %s %s\n" a rest_items)
-
             (cond
               (empty? rest_items) a
               (= (first (last a)) (first rest_items)) (recur (conj (vec (drop-last a)) (conj (last a) (first rest_items))) (rest rest_items))
@@ -98,3 +96,94 @@
     (map count_list (my_pack items))))
 
 ;(print (my_encode '(a a a a b c c a a d e e e e)))
+
+
+
+; P11 (*) Modified run-length encoding
+(defn encode-modified [item]
+  (letfn [(encode-list [a]
+            (if (= (first a) 1)
+              (second a)
+              a))]
+    (map encode-list (my_encode item))))
+
+(assert (= (encode-modified '(a a a a b c c a a d e e e e)) '((4 a) b (2 c) (2 a) d (4 e))))
+
+; P12 (**) Decode a run-length encoded list.
+(defn decode-encode-list [item]
+  (letfn [(expand' [x]
+            (if (list? x)
+              (repeat (first x) (second x))
+              (identity x)))]
+    (flatten (map expand' item))))
+
+(assert (= (decode-encode-list '((4 a) b (2 c) (2 a) d (4 e))) '(a a a a b c c a a d e e e e)))
+
+; P13 (**) Run-length encoding of a list (direct solution)
+(defn encode-direct [item]
+  (cond
+    (= 1 (count item)) item
+    (list? (first item)) (if (= (second (first item)) (second item))
+                           (encode-direct (cons (list (+ 1 (first (first item))) (second item)) (rest (rest item))))
+                           (cons (first item) (encode-direct (rest item))))
+    :else (if (= (first item) (second item))
+            (encode-direct (cons (list 1 (first item)) (rest item)))
+            (cons (first item) (encode-direct (rest item))))))
+
+(assert (= (encode-direct '(a a a a b c c a a d e e e e)) '((4 a) b (2 c) (2 a) d (4 e))))
+
+; P14 (*) Duplicate the elements of a list.
+(defn dupli [item]
+  (if (empty? item)
+    item
+    (concat (repeat 2 (first item)) (dupli (rest item)))))
+
+(assert (= (dupli '(a b c c d)) '(a a b b c c c c d d)))
+
+
+; P15 (**) Replicate the elements of a list a given number of times.
+(defn repli [item times]
+  (flatten (map (partial repeat times) item)))
+
+(assert (= (repli '(a b c) 3) '(a a a b b b c c c)))
+
+; P16 (**) Drop every N'th element from a list.
+(defn drop-every-n [items nth]
+  (if (empty? items)
+    items
+    (concat (take (- nth 1) items) (drop-every-n (drop nth items) nth))))
+
+(assert (= (drop-every-n '(a b c d e f g h i k) 3) '(a b d e g h k)))
+
+; P17 (*) Split a list into two parts; the length of the first part is given.
+
+(defn split' [items nth]
+  (list (take nth items) (drop nth items)))
+(assert (= (split' '(a b c d e f g h i k) 3) '((a b c) (d e f g h i k))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
