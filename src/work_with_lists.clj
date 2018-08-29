@@ -2,6 +2,10 @@
 
 (def ^:dynamic *verbose* true)
 
+(defn conj*
+  [s x]
+  (conj (vec s) x))
+
 (defmacro printfv
   [fmt & args]
   `(when *verbose*
@@ -161,6 +165,28 @@
   (list (take nth items) (drop nth items)))
 (assert (= (split' '(a b c d e f g h i k) 3) '((a b c) (d e f g h i k))))
 
+; P18 (**) Extract a slice from a list.
+(defn slice' [item start end]
+  (drop (- start 1) (take end item)))
+(assert (= (slice' '(a b c d e f g h i k) 3 7) '(c d e f g)))
+
+;  P19 (**) Rotate a list N places to the left.
+(defn rotate' [item nth]
+  (cond
+    (= 0 nth) item
+    (> nth 0) (rotate' (conj* (rest item) (first item)) (dec nth))
+    (< nth 0) (rotate' (cons (last item) (drop-last item)) (inc nth))
+    ))
+
+(assert (= (rotate' '[a b c d e f g h] 3) '[d e f g h a b c]))
+(assert (= (rotate' '[a b c d e f g h] -2) '[g h a b c d e f]))
+
+; P20 (*) Remove the K'th element from a list.
+; 没考虑负数的at
+(defn remove-at' [item at]
+  (concat (take (- at 1) item) (drop at item)))
+
+(assert (= (remove-at' '(a b c d) 2) '(a c d)))
 
 
 
