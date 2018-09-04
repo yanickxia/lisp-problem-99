@@ -260,6 +260,47 @@
         ))
     ))
 
+; P27 (**) Group the elements of a set into disjoint subsets.
+; TODO
+
+
+; P31 (**) Determine whether a given integer number is prime.
+(defn is-prime [n]
+  (letfn [(is-prime' [x]
+            (cond
+              (= x n) true
+              (= 0 (mod n x)) false
+              :else (is-prime' (inc x))))]
+    (is-prime' 2)))
+
+(assert (= (is-prime 13) true))
+
+; P32 (**) Determine the greatest common divisor of two positive integer numbers.
+(defn gcd [x y]
+  (if (= y 0) x
+    (gcd y (mod x y))))
+
+(assert (= (gcd 36 63) 9))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
