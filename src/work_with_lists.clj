@@ -278,19 +278,27 @@
 ; P32 (**) Determine the greatest common divisor of two positive integer numbers.
 (defn gcd [x y]
   (if (= y 0) x
-    (gcd y (mod x y))))
+              (gcd y (mod x y))))
 
 (assert (= (gcd 36 63) 9))
 
 
+; P33 (*) Determine whether two positive integer numbers are coprime.
+(defn coprime [x y]
+  (= 1 (gcd x y)))
+
+(assert (= (coprime 35 64) true))
 
 
+; P34 (**) Calculate Euler's totient function phi(m).
+(defn totient-phi [m]
+  (cond
+    (= 1 m) 1
+    (= 2 m) 1
+    (= (- m 2) (count (filter (partial coprime m) (range 2 m)))) (+ 1 (totient-phi (dec m)))
+    :else (totient-phi (dec m))))
 
-
-
-
-
-
+(assert (= (totient-phi 10) 4))
 
 
 
