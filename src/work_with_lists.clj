@@ -302,7 +302,19 @@
 
 
 
+; P35 (**) Determine the prime factors of a given positive integer.
+(defn prime-factors [m]
+  (letfn [(prime-factors' [n]
+            (cond
+              (= m n) (list m)
+              (is-prime n) (if (= (mod m n) 0)
+                             (conj (prime-factors (/ m n)) n)
+                             (prime-factors' (inc n)))
+              :else (prime-factors' (inc n)))
+            )]
+    (prime-factors' 2)))
 
+(assert (= (prime-factors 315) '(3 3 5 7)))
 
 
 
