@@ -61,3 +61,38 @@
 (assert (= (prime-factors-mult 315) '((2 3) (1 5) (1 7))))
 
 ; P37 (**) Calculate Euler's totient function phi(m) (improved).
+
+(defn phi-improved [m]
+  (let [m-prime-factors-mult (prime-factors-mult m)]
+    (.toBigInteger (* m (reduce * (map (fn [x] (- 1 (/ 1 (second x)))) m-prime-factors-mult))))))
+
+; (Math/pow (* (second x) (- (second x) 1)) (- (first x) 1))
+; (fn [x] (* (- (second x) 1) (Math/pow (second x) (- (first x) 1))))
+
+(assert (= (phi-improved 12) 4))
+
+; P38 (*) Compare the two methods of calculating Euler's totient function.
+
+;P39 (*) A list of prime numbers.
+(defn list-prime [lower upper]
+  (filter is-prime (range lower upper)))
+(assert (= (list-prime 2 10) '(2 3 5 7)))
+
+
+(defn is-goldbach [m]
+  (let [prime-list (list-prime 2 m)]
+    (not (empty? (filter (fn [x] (is-prime (- m x))) prime-list)))
+    ))
+
+
+; P40 (**) Goldbach's conjecture.
+(defn goldbach [m]
+  (let [prime-list (list-prime 2 m)]
+    (let [x (first (filter (fn [x] (is-prime (- m x))) prime-list))]
+      (list x (- m x)))))
+
+(assert (= (goldbach 28) '(5 23)))
+
+; P41 (**) A list of Goldbach compositions.
+(defn goldbach-list [lower upper]
+  (map goldbach (filter is-goldbach (range lower upper))))

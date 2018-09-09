@@ -43,6 +43,17 @@
 (defn find_numbers_element
   [items k]
   (count (filter (fn [x] (= x k)) items)))
+(assert (= (find_numbers_element '(1 2 3 2) 2) 2))
+
+(defn find_numbers_element_2 [items k]
+  (if (empty? items)
+    0
+    (if (= k (first items))
+      (+ 1 (find_numbers_element_2 (rest items) k))
+      (+ 0 (find_numbers_element_2 (rest items) k))))
+  )
+(assert (= (find_numbers_element_2 '(1 2 3 2) 2) 2))
+
 
 ; P05 (*) Reverse a list.
 (defn reverse_list
@@ -52,6 +63,14 @@
               (empty? a) b
                          (recur (rest a) (cons (first a) b))))]
     (concat_rest_list items '())))
+
+(defn reverse_list_2 [item]
+  (if (empty? item)
+    '()
+    (concat (reverse_list_2 (rest item)) (list (first item)))))
+
+(assert (= (reverse_list_2 '(1 2 3)) '(3 2 1)))
+
 
 ; P06 (*) Find out whether a list is a palindrome.
 (defn is_palindrome
